@@ -1,0 +1,22 @@
+# --- Data Manipulation ---
+# Core libraries for handling the Telco dataset and numerical operations
+pandas >=2.2.2
+numpy>=1.26.4
+
+# --- Visualization ---
+# Required for generating EDA plots and the Confusion Matrix in the notebook
+matplotlib>=3.8.4
+seaborn>=0.13.2
+
+# --- Machine Learning & Preprocessing ---
+# Core ML framework and the library used for SMOTE balancing
+scikit-learn >= 1.4.2
+imbalanced-learn>=0.12.2
+
+# --- Model Persistence ---
+# Necessary to load the .pkl files into your GUI
+joblib>=1.4.2
+
+# --- Web Application (GUI) ---
+# The framework for your hosted live demo
+streamlit>=1.33.0
