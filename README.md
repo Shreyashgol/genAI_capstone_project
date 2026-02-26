@@ -1,8 +1,8 @@
-# 🚀 Customer Churn Prediction AI Platform
+# Customer Churn Prediction AI Platform
 
 An industry-grade machine learning application for predicting customer churn using advanced ML models with an attractive, modern UI.
 
-## ✨ Features
+## Features
 
 - **Beautiful Modern UI**: Gradient backgrounds, smooth animations, and professional card-based layout
 - **Multiple ML Models**: Choose from Logistic Regression, Decision Tree, or Random Forest
@@ -11,7 +11,7 @@ An industry-grade machine learning application for predicting customer churn usi
 - **Interactive Visualizations**: ROC curves, confusion matrices, and feature importance plots
 - **Comprehensive Input Forms**: Easy-to-use forms for entering customer data
 
-## 🎯 Pages
+## Pages
 
 1. **Home**: Introduction and overview of the platform
 2. **Models**: Select from three powerful ML models
@@ -21,7 +21,7 @@ An industry-grade machine learning application for predicting customer churn usi
    - Model performance metrics
 4. **About**: Project information and technologies used
 
-## 🛠️ Installation
+## Installation
 
 1. Clone the repository or navigate to the project directory:
 ```bash
@@ -33,7 +33,7 @@ cd genAI_capstone_project
 pip install -r requirements.txt
 ```
 
-## 🚀 Running the Application
+## Running the Application
 
 Start the Streamlit application:
 ```bash
@@ -42,13 +42,13 @@ streamlit run app.py
 
 The application will open in your default web browser at `http://localhost:8501`
 
-## 📊 Models Included
+## Models Included
 
 - **Logistic Regression**: Linear model ideal for interpretability
 - **Decision Tree**: Tree-based model with clear decision rules
 - **Random Forest**: Ensemble method for superior accuracy
 
-## 🎨 UI Highlights
+## UI Highlights
 
 - Gradient purple theme with smooth transitions
 - Hover effects on cards and buttons
@@ -56,7 +56,7 @@ The application will open in your default web browser at `http://localhost:8501`
 - Professional color scheme and typography
 - Interactive tabs for organized content
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 genAI_capstone_project/
@@ -70,7 +70,7 @@ genAI_capstone_project/
 └── requirements.txt        # Python dependencies
 ```
 
-## 🔮 Making Predictions
+## Making Predictions
 
 1. Navigate to the Models page
 2. Select your preferred model
@@ -78,16 +78,16 @@ genAI_capstone_project/
 4. Fill in customer information
 5. Click "Predict Churn" to get results
 
-## 📈 Understanding Results
+## Understanding Results
 
 - **Green Result**: Low churn risk - customer likely to stay
 - **Red Result**: High churn risk - consider retention strategies
 - Probability scores show confidence level of prediction
 
-## 🤝 Contributing
+## Contributing
 
 Feel free to fork this project and submit pull requests for improvements!
 
-## 📄 License
+## License
 
 This project is open source and available for educational purposes.
