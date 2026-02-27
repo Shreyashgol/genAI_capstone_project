@@ -1,8 +1,11 @@
 import streamlit as st
+import pandas as pd
+import numpy as np
+import plotly.graph_objects as go
+import plotly.express as px
 from src.model_training import load_all_models
 from src.preprocessing import preprocess_input, load_columns, load_scaler
 
-# Page Configuration
 st.set_page_config(
     page_title="Customer Churn Prediction AI",
     page_icon="📊",
@@ -10,7 +13,6 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Custom CSS
 st.markdown("""
 <style>
     .stApp {
@@ -103,7 +105,6 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Load resources
 @st.cache_resource
 def load_resources():
     models = load_all_models()
@@ -113,7 +114,7 @@ def load_resources():
 
 models, columns, scaler = load_resources()
 
-# Initialize session state
+
 if 'page' not in st.session_state:
     st.session_state.page = 'intro'
 if 'user_data' not in st.session_state:
@@ -344,6 +345,7 @@ elif st.session_state.page == 'result':
     prediction = model.predict(processed)[0]
     prob = model.predict_proba(processed)[0]
     
+
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         if prediction == 1:
@@ -369,7 +371,40 @@ elif st.session_state.page == 'result':
             </div>
             """, unsafe_allow_html=True)
     
-    st.markdown("<h2 class='section-header'>📊 Detailed Probability Analysis</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 class='section-header'>📊 Churn Probability Gauge</h2>", unsafe_allow_html=True)
+    
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        fig_gauge = go.Figure(go.Indicator(
+            mode = "gauge+number+delta",
+            value = prob[1] * 100,
+            domain = {'x': [0, 1], 'y': [0, 1]},
+            title = {'text': "Churn Risk Level", 'font': {'size': 24, 'color': 'white'}},
+            delta = {'reference': 50, 'increasing': {'color': "#ef4444"}, 'decreasing': {'color': "#10b981"}},
+            gauge = {
+                'axis': {'range': [None, 100], 'tickwidth': 2, 'tickcolor': "white"},
+                'bar': {'color': "#7e22ce"},
+                'bgcolor': "white",
+                'borderwidth': 2,
+                'bordercolor': "white",
+                'steps': [
+                    {'range': [0, 30], 'color': '#10b981'},
+                    {'range': [30, 70], 'color': '#f59e0b'},
+                    {'range': [70, 100], 'color': '#ef4444'}],
+                'threshold': {
+                    'line': {'color': "white", 'width': 4},
+                    'thickness': 0.75,
+                    'value': prob[1] * 100}}))
+        
+        fig_gauge.update_layout(
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
+            font={'color': "white", 'family': "Arial"},
+            height=400
+        )
+        st.plotly_chart(fig_gauge, use_container_width=True)
+    
+    st.markdown("<h2 class='section-header'>📈 Probability Breakdown</h2>", unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
     with col1:
@@ -389,6 +424,77 @@ elif st.session_state.page == 'result':
             <p style='font-size: 1.2em; margin-top: 15px;'>Churn Probability</p>
         </div>
         """, unsafe_allow_html=True)
+    
+    st.markdown("<h2 class='section-header'>🎯 Top Features Influencing This Prediction</h2>", unsafe_allow_html=True)
+    
+    if hasattr(model, 'feature_importances_'):
+        importances = model.feature_importances_
+    elif hasattr(model, 'coef_'):
+        importances = np.abs(model.coef_[0])
+    else:
+        importances = np.ones(len(columns))
+    
+
+    feature_df = pd.DataFrame({
+        'Feature': columns,
+        'Importance': importances
+    }).sort_values('Importance', ascending=False).head(10)
+    
+
+    fig_features = px.bar(
+        feature_df,
+        y='Feature',
+        x='Importance',
+        orientation='h',
+        title='Top 10 Most Important Features',
+        color='Importance',
+        color_continuous_scale=['#7e22ce', '#ec4899', '#f59e0b'],
+        labels={'Importance': 'Importance Score', 'Feature': 'Customer Features'}
+    )
+    
+    fig_features.update_layout(
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(255,255,255,0.9)',
+        font={'color': "white", 'family': "Arial", 'size': 12},
+        title_font={'size': 20, 'color': 'white'},
+        xaxis={'gridcolor': 'rgba(255,255,255,0.3)'},
+        yaxis={'gridcolor': 'rgba(255,255,255,0.3)'},
+        height=500,
+        showlegend=False
+    )
+    
+    st.plotly_chart(fig_features, use_container_width=True)
+    
+
+    st.markdown("<h2 class='section-header'>📊 Probability Distribution</h2>", unsafe_allow_html=True)
+    
+    fig_prob = go.Figure(data=[
+        go.Bar(
+            x=['Will Stay', 'Will Churn'],
+            y=[prob[0] * 100, prob[1] * 100],
+            marker=dict(
+                color=['#10b981', '#ef4444'],
+                line=dict(color='white', width=2)
+            ),
+            text=[f'{prob[0]:.1%}', f'{prob[1]:.1%}'],
+            textposition='outside',
+            textfont=dict(size=20, color='white', family='Arial Black')
+        )
+    ])
+    
+    fig_prob.update_layout(
+        title='Prediction Confidence',
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(255,255,255,0.1)',
+        font={'color': "white", 'family': "Arial"},
+        yaxis={'title': 'Probability (%)', 'gridcolor': 'rgba(255,255,255,0.2)', 'range': [0, 100]},
+        xaxis={'title': '', 'showgrid': False},
+        title_font={'size': 20, 'color': 'white'},
+        height=400,
+        showlegend=False
+    )
+    
+    st.plotly_chart(fig_prob, use_container_width=True)
     
     st.markdown("<br><br>", unsafe_allow_html=True)
     col1, col2, col3 = st.columns(3)
