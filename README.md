@@ -102,15 +102,6 @@ Data Input → Preprocessing → Feature Engineering → ML Models → Predictio
 
 ---
 
-### Evaluation Criteria
-
-| Phase | Weight | Criteria |
-| :--- | :--- | :--- |
-| **Mid-Sem** | 25% | ML technique application, Feature Engineering, UI Usability, Evaluation Metrics. |
-| **End-Sem** | 30% | Reasoning quality, RAG & State management implementation, Output clarity, Deployment success. |
-
----
-
 ## Getting Started
 
 ### Installation
@@ -270,7 +261,10 @@ genAI_capstone_project/
 
 ## Team Members
 
-[Add team member names and roles]
+- Shreyash Golhani
+- Gokul VKS
+- Vaageesh Kumar SIngh
+- Mohammad Affan Anas
 
 ---
 
