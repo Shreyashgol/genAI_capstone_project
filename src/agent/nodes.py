@@ -167,11 +167,15 @@ def plan_intervention(state: ChurnAgentState) -> ChurnAgentState:
 
     # Call Groq
     try:
+        # Groq retired llama-3.1-8b-instant (the API now returns model_not_found).
+        # gpt-oss-120b is a reasoning model, so reasoning_effort stays low and
+        # max_tokens leaves room for the reasoning on top of the JSON answer.
         llm = ChatGroq(
-            model="llama-3.1-8b-instant",
+            model="openai/gpt-oss-120b",
             api_key=groq_api_key,
             temperature=0.3,  # Low temp for consistent, factual output
-            max_tokens=1024,
+            max_tokens=2048,
+            reasoning_effort="low",
         )
         messages = [
             SystemMessage(content=RETENTION_SYSTEM_PROMPT),
