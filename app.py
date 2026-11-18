@@ -859,20 +859,33 @@ elif st.session_state.page == "result":
     )
 
     from sklearn.metrics import confusion_matrix as sk_confusion_matrix
-    import plotly.figure_factory as ff
-
     y_pred_eval = model.predict(test_data["X_test_scaled"])
     cm = sk_confusion_matrix(test_data["y_test"], y_pred_eval)
 
     cm_labels = ["Will Stay", "Will Churn"]
-    fig_cm = ff.create_annotated_heatmap(
-        z=cm,
-        x=cm_labels,
-        y=cm_labels,
-        colorscale=[[0, "#f0f4ff"], [1, "#7e22ce"]],
-        showscale=False,
-        annotation_text=[[str(v) for v in row] for row in cm],
+    # Plain go.Heatmap plus one annotation per cell. plotly 7 no longer has
+    # figure_factory.create_annotated_heatmap, and calling it crashed this page
+    # before the AI retention strategy section could render.
+    cm_max = cm.max() if cm.size else 0
+    fig_cm = go.Figure(
+        go.Heatmap(
+            z=cm,
+            x=cm_labels,
+            y=cm_labels,
+            colorscale=[[0, "#f0f4ff"], [1, "#7e22ce"]],
+            showscale=False,
+        )
     )
+    for i, actual in enumerate(cm_labels):
+        for j, predicted in enumerate(cm_labels):
+            value = int(cm[i][j])
+            fig_cm.add_annotation(
+                x=predicted,
+                y=actual,
+                text=str(value),
+                showarrow=False,
+                font={"size": 18, "color": "white" if value > cm_max / 2 else "#1e1b4b"},
+            )
     fig_cm.update_layout(
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
